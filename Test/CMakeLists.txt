@@ -1,0 +1,1 @@
+add_executable(ChimericTest main.cpp TestResourceManager.cpp)

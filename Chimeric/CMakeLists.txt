@@ -1,0 +1,1 @@
+add_library(Chimeric core/World.cpp core/World.h core/ResourceManager.h)
