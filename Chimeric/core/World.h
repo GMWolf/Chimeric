@@ -5,8 +5,11 @@
 #ifndef CHIMERIC_WORLD_H
 #define CHIMERIC_WORLD_H
 
+#include "ResourceManager.h"
+
 class World {
 
+    ResourceManager resources;
 };
 
 
