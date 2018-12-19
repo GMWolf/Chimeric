@@ -1,1 +1,1 @@
-add_executable(ChimericTest main.cpp TestResourceManager.cpp)
+add_executable(ChimericTest main.cpp TestResourceManager.cpp TestHashedArrayTree.cpp common.h TestStoreType.cpp TestVecStore.cpp)

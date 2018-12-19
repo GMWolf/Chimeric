@@ -35,7 +35,7 @@ namespace chimeric {
         const T &get() const;
 
         template<class T, class... Args>
-        void emplace(Args... args);
+        void emplace(Args&&... args);
 
     protected:
         std::unordered_map<std::type_index, handle> store;
@@ -52,11 +52,11 @@ namespace chimeric {
     }
 
     template<class T, class... Args>
-    void ResourceManager::emplace(Args... args) {
+    void ResourceManager::emplace(Args&&... args) {
         /*store.emplace(std::piecewise_construct,
                 std::forward_as_tuple(typeid(T)),
                 std::forward_as_tuple(new T(args...)));*/
-        store.try_emplace(typeid(T), new T(args...));
+        store.try_emplace(typeid(T), new T(std::forward<Args>(args)...));
     }
 
 }

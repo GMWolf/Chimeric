@@ -1,1 +1,1 @@
-add_library(Chimeric core/World.cpp core/World.h core/ResourceManager.h)
+add_library(Chimeric core/World.cpp core/World.h core/ResourceManager.h core/ComponentManager.cpp core/ComponentManager.h core/store/HashedArrayTree.h core/Storage.h core/store/VecStore.h)

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "catch.hpp"
 #include "core/ResourceManager.h"
+#include "common.h"
 
 using namespace chimeric;
 
@@ -26,18 +27,9 @@ TEST_CASE("Resource Manager") {
 
         bool destructed = false;
 
-        struct destructChecker {
-            bool* br;
-            destructChecker(bool* br) : br(br){};
-            ~destructChecker() {
-                *br = true;
-            }
-        };
-
-
         {
             ResourceManager  rm;
-            rm.emplace<destructChecker>(&destructed);
+            rm.emplace<destructorTest>(destructed);
         }
 
         REQUIRE(destructed);
