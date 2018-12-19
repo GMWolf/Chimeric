@@ -6,6 +6,7 @@
 #include "catch.hpp"
 #include "core/ResourceManager.h"
 
+using namespace chimeric;
 
 TEST_CASE("Resource Manager") {
 
@@ -30,7 +31,6 @@ TEST_CASE("Resource Manager") {
             destructChecker(bool* br) : br(br){};
             ~destructChecker() {
                 *br = true;
-                std::cout << "oh?" << std::endl;
             }
         };
 

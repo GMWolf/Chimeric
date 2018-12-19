@@ -7,10 +7,13 @@
 
 #include "ResourceManager.h"
 
-class World {
+namespace chimeric {
 
-    ResourceManager resources;
-};
+    class World {
 
+        ResourceManager resources;
+    };
+
+}
 
 #endif //CHIMERIC_WORLD_H
