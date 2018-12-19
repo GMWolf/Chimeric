@@ -5,7 +5,7 @@
 #ifndef CHIMERIC_STORAGE_H
 #define CHIMERIC_STORAGE_H
 
-#include <core/store/HashedArrayTree.h>
+#include "store/HashedArrayTree.h"
 
 namespace chimeric {
 

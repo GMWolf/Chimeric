@@ -5,7 +5,7 @@
 #ifndef CHIMERIC_RESOURCEMANAGER_H
 #define CHIMERIC_RESOURCEMANAGER_H
 
-#include <bits/unordered_map.h>
+#include <unordered_map>
 #include <typeindex>
 #include <tuple>
 
@@ -53,10 +53,10 @@ namespace chimeric {
 
     template<class T, class... Args>
     void ResourceManager::emplace(Args&&... args) {
-        /*store.emplace(std::piecewise_construct,
+        store.emplace(std::piecewise_construct,
                 std::forward_as_tuple(typeid(T)),
-                std::forward_as_tuple(new T(args...)));*/
-        store.try_emplace(typeid(T), new T(std::forward<Args>(args)...));
+                std::forward_as_tuple(new T(args...)));
+        //store.try_emplace(typeid(T), new T(std::forward<Args>(args)...));
     }
 
 }

@@ -63,17 +63,17 @@ TEST_CASE("VecStore") {
 
         bool destructed[8]{};
 
-        for(int i = 0; i < 8; i++) REQUIRE_FALSE(destructed[i]);
+        for (bool i : destructed) REQUIRE_FALSE(i);
 
         {
             VecStore<destructorTest> vec;
 
-            for(int i = 0; i < 8; i++) {
+            for(size_t i = 0; i < 8; i++) {
                 vec.emplace(i * 7, destructed[i]);
             }
 
-            for(int i = 0; i < 8; i++) {
-                vec.erase(i*7);
+            for(size_t i = 0; i < 8; i++) {
+                vec.erase(i * 7);
                 REQUIRE(destructed[i]);
             }
 
@@ -87,17 +87,17 @@ TEST_CASE("VecStore") {
 
         bool destructed[8]{};
 
-        for(int i = 0; i < 8; i++) REQUIRE_FALSE(destructed[i]);
+        for (bool i : destructed) REQUIRE_FALSE(i);
 
         {
             VecStore<destructorTest> vec;
 
-            for(int i = 0; i < 8; i++) {
+            for(size_t i = 0; i < 8; i++) {
                 vec.emplace(i * 7, destructed[i]);
             }
         }
 
-        for(int i = 0; i < 8; i++) REQUIRE(destructed[i]);
+        for (bool i : destructed) REQUIRE(i);
     }
 
 }

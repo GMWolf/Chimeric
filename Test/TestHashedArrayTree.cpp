@@ -65,22 +65,20 @@ TEST_CASE("HashedArrayTree") {
 
         bool destructed[8]{};
 
-        for(int i = 0; i < 8; i++) REQUIRE_FALSE(destructed[i]);
+        for (bool i : destructed) REQUIRE_FALSE(i);
 
         {
             HashedArrayTree<destructorTest, 8> hat;
 
-            for(int i = 0; i < 8; i++) {
+            for(size_t i = 0; i < 8; i++) {
                 hat.emplace(i * 7, destructed[i]);
             }
 
-            for(int i = 0; i < 8; i++) {
+            for(size_t i = 0; i < 8; i++) {
                 hat.erase(i * 7);
                 REQUIRE(destructed[i]);
             }
         }
-
-
 
     }
 
@@ -88,17 +86,17 @@ TEST_CASE("HashedArrayTree") {
 
         bool destructed[8]{};
 
-        for(int i = 0; i < 8; i++) REQUIRE_FALSE(destructed[i]);
+        for (bool i : destructed) REQUIRE_FALSE(i);
 
         {
             HashedArrayTree<destructorTest, 8> hat;
 
-            for(int i = 0; i < 8; i++) {
+            for(size_t i = 0; i < 8; i++) {
                 hat.emplace(i * 7, destructed[i]);
             }
         }
 
-        for(int i = 0; i < 8; i++) REQUIRE(destructed[i]);
+        for (bool i : destructed) REQUIRE(i);
     }
 
 }
