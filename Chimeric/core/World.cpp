@@ -3,3 +3,13 @@
 //
 
 #include "World.h"
+
+
+size_t chimeric::World::create() {
+    return entities.create();
+}
+
+void chimeric::World::destroy(size_t id) {
+    entities.destroy(id);
+}
+

@@ -1,3 +1,3 @@
-add_executable(ChimericTest main.cpp TestResourceManager.cpp TestHashedArrayTree.cpp common.h TestStoreType.cpp TestVecStore.cpp TestBitset.cpp TestFlat_Set.cpp)
+add_executable(ChimericTest main.cpp ResourceManagerTest.cpp HashedArrayTreeTest.cpp common.h StoreTypeTest.cpp VecStoreTest.cpp BitsetTest.cpp Flat_setTest.cpp EntityComponentTest.cpp)
 
 target_link_libraries(ChimericTest Chimeric)

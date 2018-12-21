@@ -40,14 +40,19 @@ namespace chimeric {
         template<class T, class... Args>
         void emplace(Args&&... args);
 
+        template<class T>
+        bool has();
+
+
     protected:
         std::unordered_map<std::type_index, handle> store;
     };
 
     template<class T>
-    T &ResourceManager::get() {
+    T& ResourceManager::get() {
         return *static_cast<T *>(store.at(typeid(T)).p);
     }
+
 
     template<class T>
     const T &ResourceManager::get() const {
@@ -65,6 +70,11 @@ namespace chimeric {
     template<class T>
     const T &ResourceManager::getConst() {
         return get<T>();
+    }
+
+    template<class T>
+    bool ResourceManager::has() {
+        return store.find(typeid(T)) != store.end();
     }
 
 }

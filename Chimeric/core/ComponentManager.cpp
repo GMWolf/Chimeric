@@ -3,3 +3,7 @@
 //
 
 #include "ComponentManager.h"
+
+void chimeric::baseComponentManager::remove(size_t id) {
+    batchRemove.insert(id);
+}
