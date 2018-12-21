@@ -34,6 +34,8 @@ namespace chimeric {
         bool contains(const T& value) const;
 
         std::pair<iterator, bool> insert(const T& value);
+        void insert(std::initializer_list<T> ilist);
+
 
         iterator erase(iterator pos);
 
@@ -138,6 +140,13 @@ namespace chimeric {
         std::sort(b.begin(), b.end());
 
         return a.vec == b.vec;
+    }
+
+    template<class T, class Allocator>
+    void flat_set<T, Allocator>::insert(std::initializer_list<T> ilist) {
+        for(auto& e : ilist) {
+            insert(e);
+        }
     }
 }
 
