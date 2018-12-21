@@ -10,12 +10,9 @@
 #include "Storage.h"
 
 namespace chimeric {
-
     template<class T>
     class ComponentManager {
-
         Store<T> store;
-
     public:
         T& operator[](size_t id);
         bool has(size_t id);

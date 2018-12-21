@@ -10,9 +10,20 @@
 namespace chimeric {
 
     class World {
-
         ResourceManager resources;
+        std::unordered_map<std::type_index, size_t> componentIDs;
+
+    public:
+        template<class T>
+        size_t getComponentID();
     };
+
+
+
+    template<class T>
+    size_t World::getComponentID() {
+        return componentIDs[typeid(T)];
+    }
 
 }
 

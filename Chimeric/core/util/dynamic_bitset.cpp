@@ -21,6 +21,12 @@ chimeric::dynamic_bitset::dynamic_bitset(const std::string &string) {
     }
 }
 
+chimeric::dynamic_bitset::dynamic_bitset(std::initializer_list<size_t> il) {
+    for(size_t e : il) {
+        set(e);
+    }
+}
+
 chimeric::dynamic_bitset::reference chimeric::dynamic_bitset::operator[](size_t i) {
     const size_t w = i / wordSize;
     if (w >= words.size()) {
@@ -155,10 +161,7 @@ chimeric::dynamic_bitset &chimeric::dynamic_bitset::operator=(chimeric::dynamic_
     return *this;
 }
 
-chimeric::dynamic_bitset &chimeric::dynamic_bitset::operator=(const chimeric::dynamic_bitset &o) {
-    words = o.words;
-    return *this;
-}
+chimeric::dynamic_bitset &chimeric::dynamic_bitset::operator=(const chimeric::dynamic_bitset &o) = default;
 
 bool chimeric::dynamic_bitset::operator==(const chimeric::dynamic_bitset &o) const {
     size_t m = std::min(words.size(), o.words.size());
@@ -273,7 +276,7 @@ void chimeric::dynamic_bitset::swap(chimeric::dynamic_bitset &o) {
 }
 
 std::ostream &chimeric::operator<<(std::ostream &os, const chimeric::dynamic_bitset &bitset) {
-    for(int i = static_cast<int>(bitset.words.size() - 1); i >= 0; i--) {
+    for(auto i = static_cast<int>(bitset.words.size() - 1); i >= 0; i--) {
         os << bitset.words[i];
     }
     return os;

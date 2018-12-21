@@ -23,6 +23,7 @@ namespace chimeric {
         dynamic_bitset(const dynamic_bitset& o);
 
         explicit dynamic_bitset(const std::string& string);
+        dynamic_bitset(std::initializer_list<size_t> il);
 
         void swap(dynamic_bitset& o);
 

@@ -32,6 +32,9 @@ namespace chimeric {
         T &get();
 
         template<class T>
+        const T& getConst();
+
+        template<class T>
         const T &get() const;
 
         template<class T, class... Args>
@@ -57,6 +60,11 @@ namespace chimeric {
                 std::forward_as_tuple(typeid(T)),
                 std::forward_as_tuple(new T(args...)));
         //store.try_emplace(typeid(T), new T(std::forward<Args>(args)...));
+    }
+
+    template<class T>
+    const T &ResourceManager::getConst() {
+        return get<T>();
     }
 
 }
