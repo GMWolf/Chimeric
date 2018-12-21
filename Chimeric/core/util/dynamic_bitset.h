@@ -13,13 +13,16 @@ namespace chimeric {
 
     class dynamic_bitset{
         static const size_t wordSize = 64;
-        std::vector<std::bitset<wordSize>> words;
+        using word = std::bitset<wordSize>;
+        std::vector<word> words;
     public:
         using reference = typename std::bitset<wordSize>::reference;
 
         dynamic_bitset() = default;
         dynamic_bitset(dynamic_bitset&& o) noexcept;
         dynamic_bitset(const dynamic_bitset& o);
+
+        explicit dynamic_bitset(const std::string& string);
 
         void swap(dynamic_bitset& o);
 
@@ -53,6 +56,12 @@ namespace chimeric {
 
         bool containsAll(const dynamic_bitset& o) const;
         bool subsetOf(const dynamic_bitset& o) const;
+        bool intersects(const dynamic_bitset& o) const;
+        bool notIntersects(const dynamic_bitset& o) const;
+
+        void trim();
+
+        std::vector<size_t> toIntVector();
 
         friend std::ostream &operator<<(std::ostream &os, const dynamic_bitset &bitset);
     };

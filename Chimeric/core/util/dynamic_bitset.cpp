@@ -9,12 +9,23 @@ chimeric::dynamic_bitset::dynamic_bitset(chimeric::dynamic_bitset &&o) noexcept 
 
 chimeric::dynamic_bitset::dynamic_bitset(const chimeric::dynamic_bitset &o) = default;
 
+chimeric::dynamic_bitset::dynamic_bitset(const std::string &string) {
+    size_t n = ((string.length() + wordSize - 1) / wordSize);
+    words.resize(n);
+
+    for(int i = 0; i < n; i++) {
+        size_t a = string.length() - (i * wordSize);
+        size_t b = (size_t) std::max(0, ((int)a) - ((int)wordSize));
+        size_t l = a - b;
+        words[i] = word(string, b, l);
+    }
+}
 
 chimeric::dynamic_bitset::reference chimeric::dynamic_bitset::operator[](size_t i) {
-    if (i >= words.size()){
-        words.resize(i);
+    const size_t w = i / wordSize;
+    if (w >= words.size()) {
+        words.resize(w+1);
     }
-
     return words[i / wordSize][i % wordSize];
 }
 
@@ -130,7 +141,7 @@ chimeric::dynamic_bitset &chimeric::dynamic_bitset::operator^=(const chimeric::d
             words[i] = o.words[i];
         }
     } else {
-        const auto zero = std::bitset<wordSize>();
+        const auto zero = word();
         for(size_t i = m; i < words.size(); i++) {
             words[i] ^= zero;
         }
@@ -150,11 +161,51 @@ chimeric::dynamic_bitset &chimeric::dynamic_bitset::operator=(const chimeric::dy
 }
 
 bool chimeric::dynamic_bitset::operator==(const chimeric::dynamic_bitset &o) const {
-    return words == o.words;
+    size_t m = std::min(words.size(), o.words.size());
+
+    for(size_t i = m; i < words.size(); i++) {
+        if (words[i].any()) {
+            return false;
+        }
+    }
+
+    for(size_t i = m; i < o.words.size(); i++) {
+        if (o.words[i].any()) {
+            return false;
+        }
+    }
+
+    for(size_t i = 0; i < m; i++) {
+        if (words[i] != o.words[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool chimeric::dynamic_bitset::operator!=(const chimeric::dynamic_bitset &o) const {
-    return words != o.words;
+    size_t m = std::min(words.size(), o.words.size());
+
+    for(size_t i = m; i < words.size(); i++) {
+        if (words[i].any()) {
+            return true;
+        }
+    }
+
+    for(size_t i = m; i < o.words.size(); i++) {
+        if (o.words[i].any()) {
+            return true;
+        }
+    }
+
+    for(size_t i = 0; i < m; i++) {
+        if (words[i] != o.words[i]) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 chimeric::dynamic_bitset chimeric::dynamic_bitset::operator&(const chimeric::dynamic_bitset &o) const {
@@ -191,6 +242,32 @@ bool chimeric::dynamic_bitset::subsetOf(const chimeric::dynamic_bitset &o) const
     return o.containsAll(*this);
 }
 
+bool chimeric::dynamic_bitset::intersects(const chimeric::dynamic_bitset &o) const {
+    size_t m = std::min(words.size(), o.words.size());
+
+    for(size_t i = 0; i < m; i++) {
+        if ((words[i] & o.words[i]).any()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool chimeric::dynamic_bitset::notIntersects(const chimeric::dynamic_bitset &o) const {
+    size_t m = std::min(words.size(), o.words.size());
+
+    for(size_t i = 0; i < m; i++) {
+        if((words[i] & o.words[i]).any()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+
 void chimeric::dynamic_bitset::swap(chimeric::dynamic_bitset &o) {
     std::swap(words, o.words);
 }
@@ -201,4 +278,29 @@ std::ostream &chimeric::operator<<(std::ostream &os, const chimeric::dynamic_bit
     }
     return os;
 }
+
+void chimeric::dynamic_bitset::trim() {
+    size_t i = words.size();
+    while(words[i - 1].none() && i > 0) i--;
+    words.resize(i);
+}
+
+std::vector<size_t> chimeric::dynamic_bitset::toIntVector() {
+    std::vector<size_t> vector;
+
+    for(size_t i = 0; i < words.size(); i++) {
+        word w = words[i]; //words should fit in one register
+        if (w.any()) {
+            for(size_t j = 0; j < wordSize; j++) {
+                if (w[j]) {
+                    vector.push_back((i * wordSize) + j);
+                }
+            }
+        }
+    }
+
+    return vector;
+}
+
+
 
