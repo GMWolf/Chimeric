@@ -17,11 +17,16 @@ namespace chimeric {
         ResourceManager resources;
 
         std::unordered_map<std::type_index, size_t> componentIDs;
+
+        std::vector<baseComponentManager*> componentManagers;
+
         size_t nextComponentID = 0;
 
         EntityManager entities;
-
     public:
+
+        void update();
+
         template<class T>
         size_t getComponentID();
 
@@ -48,6 +53,7 @@ namespace chimeric {
     void World::registerComponent() {
         componentIDs.insert({typeid(T), nextComponentID++});
         resources.emplace<ComponentManager<T>>();
+        componentManagers.push_back(&resources.get<ComponentManager<T>>());
     }
 
     template<class T>

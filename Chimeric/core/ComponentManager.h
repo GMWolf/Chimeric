@@ -7,7 +7,7 @@
 
 #include <cstddef>
 #include <utility>
-#include <core/util/flat_set.h>
+#include "util/flat_set.h"
 #include "Storage.h"
 
 namespace chimeric {
@@ -30,6 +30,7 @@ namespace chimeric {
 
         T& operator[](size_t id);
         bool has(size_t id);
+        bool available(size_t id);
 
         template<class... Args>
         T& emplace(size_t id, Args&&... args);
@@ -44,20 +45,32 @@ namespace chimeric {
 
     template<class T>
     bool ComponentManager<T>::has(size_t id) {
-        return store.has(id);
+        return store.has(id) && !batchRemove.contains(id);
     }
 
     template<class T>
     template<class... Args>
     T &ComponentManager<T>::emplace(size_t id, Args&&... args) {
+        auto p = batchRemove.find(id);
+        if (p != batchRemove.end()) {
+            batchRemove.erase(p);
+            store.erase(id);
+        }
+
         return store.emplace(id, std::forward<Args>(args)...);
     }
 
     template<class T>
     void ComponentManager<T>::processBatchTasks() {
-        for(auto e : batchRemove()) {
+        for(auto e : batchRemove) {
             store.erase(e);
         }
+        batchRemove.clear();
+    }
+
+    template<class T>
+    bool ComponentManager<T>::available(size_t id) {
+        return store.has(id);
     }
 
 }

@@ -11,5 +11,14 @@ size_t chimeric::World::create() {
 
 void chimeric::World::destroy(size_t id) {
     entities.destroy(id);
+    for(auto& m : componentManagers) {
+        m->remove(id);
+    }
+}
+
+void chimeric::World::update() {
+    for(auto&& cm : componentManagers) {
+        cm->processBatchTasks();
+    }
 }
 
