@@ -97,7 +97,6 @@ TEST_CASE("Entity Component Store") {
         REQUIRE_FALSE(mapper.available(e));
 
         REQUIRE(destructed);
-
     }
 
     SECTION("World destruct", "[CS]") {

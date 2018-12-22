@@ -3,6 +3,7 @@
 //
 
 #include "World.h"
+#include "ComponentManager.h"
 
 
 size_t chimeric::World::create() {
@@ -20,5 +21,11 @@ void chimeric::World::update() {
     for(auto&& cm : componentManagers) {
         cm->processBatchTasks();
     }
+
+    entities.update();
+}
+
+size_t chimeric::World::getComponentID(std::type_index c) const{
+    return componentIDs.at(c);
 }
 

@@ -7,15 +7,24 @@
 
 #include <cstddef>
 #include <utility>
+#include <typeindex>
 #include "util/flat_set.h"
 #include "Storage.h"
 
 namespace chimeric {
 
+    class World;
     class baseComponentManager {
     protected:
+
+        explicit baseComponentManager(World& world, std::type_index c);
+        World& world;
         flat_set<size_t> batchRemove;
 
+        size_t bit;
+
+        void setBit(size_t e);
+        void resetBit(size_t e);
     public:
         virtual void processBatchTasks() = 0;
         void remove(size_t id);
@@ -25,7 +34,7 @@ namespace chimeric {
     class ComponentManager : public baseComponentManager {
         Store<T> store;
     public:
-        ComponentManager() = default;
+        explicit ComponentManager(World& world) : baseComponentManager(world, typeid(T)) {}
         ComponentManager(const ComponentManager& o) = delete;
 
         T& operator[](size_t id);
@@ -57,6 +66,7 @@ namespace chimeric {
             store.erase(id);
         }
 
+        setBit(id);
         return store.emplace(id, std::forward<Args>(args)...);
     }
 

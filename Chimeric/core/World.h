@@ -7,9 +7,9 @@
 
 #include <queue>
 #include "ResourceManager.h"
-#include "ComponentManager.h"
 #include "util/dynamic_bitset.h"
 #include "EntityManager.h"
+#include "ComponentManager.h"
 
 namespace chimeric {
 
@@ -22,13 +22,15 @@ namespace chimeric {
 
         size_t nextComponentID = 0;
 
-        EntityManager entities;
     public:
+        EntityManager entities;
 
         void update();
 
         template<class T>
-        size_t getComponentID();
+        size_t getComponentID() const;
+
+        size_t getComponentID(std::type_index c) const;
 
         template<class T>
         void registerComponent();
@@ -45,14 +47,14 @@ namespace chimeric {
 
 
     template<class T>
-    size_t World::getComponentID() {
-        return componentIDs[typeid(T)];
+    size_t World::getComponentID() const {
+        return componentIDs.at(typeid(T));
     }
 
     template<class T>
     void World::registerComponent() {
         componentIDs.insert({typeid(T), nextComponentID++});
-        resources.emplace<ComponentManager<T>>();
+        resources.emplace<ComponentManager<T>>(*this);
         componentManagers.push_back(&resources.get<ComponentManager<T>>());
     }
 

@@ -25,6 +25,7 @@ namespace chimeric {
             ~Chunk();
 
             T &operator[](size_t i);
+            const T& operator[](size_t i) const;
 
             template<class... Args>
             T &emplace(size_t i, Args &&... args);
@@ -48,6 +49,7 @@ namespace chimeric {
         ~HashedArrayTree();
 
         T &operator[](size_t i);
+        const T& operator[](size_t i) const;
 
         template<typename ...Args>
         T &emplace(size_t i, Args &&... args);
@@ -71,6 +73,13 @@ namespace chimeric {
 
     template<class T, size_t chunkSize>
     T &HashedArrayTree<T, chunkSize>::operator[](size_t i) {
+        size_t ci = i / chunkSize;
+        size_t ii = i % chunkSize;
+        return (*chunks[ci])[ii];
+    }
+
+    template<class T, size_t chunkSize>
+    const T &HashedArrayTree<T, chunkSize>::operator[](size_t i) const {
         size_t ci = i / chunkSize;
         size_t ii = i % chunkSize;
         return (*chunks[ci])[ii];
@@ -136,6 +145,11 @@ namespace chimeric {
     }
 
     template<class T, size_t chunkSize>
+    const T &HashedArrayTree<T, chunkSize>::Chunk::operator[](size_t i) const {
+        return items[i];
+    }
+
+    template<class T, size_t chunkSize>
     template<class... Args>
     T &HashedArrayTree<T, chunkSize>::Chunk::emplace(size_t i, Args &&... args) {
         if (!usage[i]) {
@@ -163,6 +177,8 @@ namespace chimeric {
             }
         }
     }
+
+
 
 
 }

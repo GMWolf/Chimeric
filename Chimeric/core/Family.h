@@ -11,6 +11,7 @@
 namespace chimeric {
 
     class Family {
+        friend class FamilySubscription;
         flat_set<std::type_index> all_set;
         flat_set<std::type_index> one_set;
         flat_set<std::type_index> exclude_set;
@@ -25,8 +26,6 @@ namespace chimeric {
         template<class... C>
         Family& exclude();
     };
-
-
 
 
     template<class... C>
