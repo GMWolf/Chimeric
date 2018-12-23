@@ -7,8 +7,6 @@
 
 #include "util/dynamic_bitset.h"
 
-
-
 namespace chimeric {
 
     class World;
@@ -24,7 +22,6 @@ namespace chimeric {
 
         bool match(size_t e);
     };
-
 }
 
 

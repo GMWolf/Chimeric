@@ -48,6 +48,29 @@ namespace chimeric {
         std::unordered_map<std::type_index, handle> store;
     };
 
+
+    template<class... R>
+    class ResourceView {
+        std::tuple<R&...> resources;
+
+        ResourceView(ResourceManager& resourceManager);
+    public:
+
+        template <class T>
+        T& get();
+
+    };
+
+    template<class... R>
+    ResourceView<R...>::ResourceView(ResourceManager &resourceManager) : resources(resourceManager.get<R>()...){
+    }
+
+    template<class... R>
+    template<class T>
+    T &ResourceView<R...>::get() {
+        return std::get<T>(resources);
+    }
+
     template<class T>
     T& ResourceManager::get() {
         return *static_cast<T *>(store.at(typeid(T)).p);
