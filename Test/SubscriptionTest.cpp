@@ -121,4 +121,55 @@ TEST_CASE("Family subscriptions") {
         REQUIRE_FALSE(s.match(e2));
     }
 
+
+    SECTION("Subscription list", "[FS]") {
+
+        World world;
+        world.registerComponent<ComponentA>();
+        world.registerComponent<ComponentB>();
+        world.registerComponent<ComponentC>();
+
+        auto& mapperA = world.get<ComponentManager<ComponentA>>();
+        auto& mapperB = world.get<ComponentManager<ComponentB>>();
+        auto& mapperC = world.get<ComponentManager<ComponentC>>();
+
+        auto s = world.getSubscription(Family().all<ComponentA, ComponentB>().exclude<ComponentC>());
+
+        auto e1 = world.create();
+        auto e2 = world.create();
+        auto e3 = world.create();
+
+        REQUIRE(!world.subscriptionsByBit.empty());
+        REQUIRE(world.subscriptionsByBit[0].count() == 1);
+
+        REQUIRE(s.entities.empty());
+
+        mapperA.emplace(e1);
+        mapperB.emplace(e2);
+        mapperC.emplace(e3);
+        world.update();
+        REQUIRE(s.entities.empty());
+
+        mapperB.emplace(e1);
+        mapperA.emplace(e2);
+        mapperA.emplace(e3);
+        mapperB.emplace(e3);
+
+        world.update();
+        REQUIRE(s.match(e1));
+        REQUIRE(s.match(e2));
+        REQUIRE(s.entities == std::vector{e1, e2});
+
+        mapperA.remove(e1);
+        mapperC.emplace(e2);
+        mapperC.remove(e3);
+
+        world.update();
+
+        REQUIRE(s.entities == std::vector{e3});
+
+
+
+    }
+
 }

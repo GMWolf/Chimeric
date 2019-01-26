@@ -18,12 +18,26 @@ void chimeric::World::destroy(size_t id) {
 }
 
 void chimeric::World::update() {
+
+    dynamic_bitset dirty;
+
     for(auto& cm : componentManagers) {
-
-        //Get dirty bits
-
+        //subscriptions dirty bits
+        if (subscriptionsByBit.size() > cm->bit) {
+            if (cm->batchAdd.any() || cm->batchRemove.any()) {
+                dirty = cm->batchAdd & cm->batchRemove;
+                for (auto sub : subscriptionsByBit[cm->bit]) {
+                    sub->dirtyEntities &= dirty;
+                }
+            }
+        }
 
         cm->processBatchTasks(*this);
+    }
+
+    //update subscriptions
+    for(auto& s : subscriptions) {
+        s->update();
     }
 
     entities.update();
@@ -42,11 +56,20 @@ chimeric::baseComponentManager *chimeric::World::getComponentManager(const char 
     return componentManagersByID[id];
 }
 
-chimeric::FamilySubscription &chimeric::World::getSubscription(const chimeric::Family &family) {
+const chimeric::FamilySubscription &chimeric::World::getSubscription(const chimeric::Family &family) {
 
     auto s = std::make_unique<FamilySubscription>(*this, family);
-    subscriptions.push_back(std::move(s));
 
+    dynamic_bitset allbits = s->all & s->exlcude & s->one;
+
+    allbits.foreachset([&](auto e) {
+        if (subscriptionsByBit.size() <= e) {
+            subscriptionsByBit.resize(e + 1);
+        }
+        subscriptionsByBit[e].insert(s.get());
+    });
+
+    subscriptions.push_back(std::move(s));
     return *subscriptions.back();
 }
 

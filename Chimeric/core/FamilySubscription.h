@@ -13,18 +13,31 @@ namespace chimeric {
     class Family;
     class FamilySubscription {
         friend class World;
+
+        using iterator = std::vector<size_t>::const_iterator;
+
         const World& world;
         dynamic_bitset all;
         dynamic_bitset exlcude;
         dynamic_bitset one;
 
-        std::vector<size_t> entities;
+
+        dynamic_bitset entitiesActive;
+
+
         dynamic_bitset dirtyEntities;
 
     public:
+        std::vector<size_t> entities;
+
         FamilySubscription(const World& world, const Family& family);
 
-        bool match(size_t e);
+        iterator begin() const;
+        iterator end() const;
+
+        void update();
+
+        bool match(size_t e) const;
     };
 }
 

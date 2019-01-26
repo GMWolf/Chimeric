@@ -8,6 +8,7 @@
 #include <queue>
 #include "ResourceManager.h"
 #include "util/dynamic_bitset.h"
+#include "util/flat_set.h"
 #include "EntityManager.h"
 #include "ComponentManager.h"
 #include "FamilySubscription.h"
@@ -17,6 +18,7 @@ namespace chimeric {
     using AspectStore = HashedArrayTree<dynamic_bitset>;
 
     class World {
+    public:
         ResourceManager resources;
 
         std::unordered_map<std::type_index, size_t> componentIDs;
@@ -26,8 +28,9 @@ namespace chimeric {
 
         size_t nextComponentID = 0;
 
+        //Subscription stuff
         std::vector<std::unique_ptr<FamilySubscription>> subscriptions;
-
+        std::vector<flat_set<FamilySubscription*>> subscriptionsByBit;
 
     public:
         EntityManager entities;
@@ -49,7 +52,7 @@ namespace chimeric {
 
         baseComponentManager* getComponentManager(const char* name);
 
-        FamilySubscription& getSubscription(const Family& family);
+        const FamilySubscription& getSubscription(const Family& family);
 
         template<class T>
         const T& getConst();
