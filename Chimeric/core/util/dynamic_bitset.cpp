@@ -291,19 +291,14 @@ void chimeric::dynamic_bitset::trim() {
 std::vector<size_t> chimeric::dynamic_bitset::toIntVector() {
     std::vector<size_t> vector;
 
-    for(size_t i = 0; i < words.size(); i++) {
-        word w = words[i]; //words should fit in one register
-        if (w.any()) {
-            for(size_t j = 0; j < wordSize; j++) {
-                if (w[j]) {
-                    vector.push_back((i * wordSize) + j);
-                }
-            }
-        }
-    }
+    foreachset([&](size_t e){
+       vector.push_back(e);
+    });
 
     return vector;
 }
+
+
 
 
 

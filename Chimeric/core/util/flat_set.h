@@ -19,7 +19,6 @@ namespace chimeric {
         using iterator = typename std::vector<T>::iterator;
         using const_iterator = typename std::vector<T>::const_iterator;
 
-
         flat_set() = default;
         flat_set(std::initializer_list<T> il);
 
@@ -35,7 +34,6 @@ namespace chimeric {
 
         std::pair<iterator, bool> insert(const T& value);
         void insert(std::initializer_list<T> ilist);
-
 
         iterator erase(iterator pos);
 

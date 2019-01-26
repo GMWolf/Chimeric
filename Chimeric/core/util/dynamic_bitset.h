@@ -64,10 +64,30 @@ namespace chimeric {
 
         std::vector<size_t> toIntVector();
 
+        template<class L>
+        void foreachset(L fun);
+
         friend std::ostream &operator<<(std::ostream &os, const dynamic_bitset &bitset);
     };
 
 }
+
+
+template<class L>
+void chimeric::dynamic_bitset::foreachset(L fun) {
+    size_t i = 0;
+    for(auto& word : words) {
+        if (word.any()) {
+            for(size_t j = 0; j < wordSize; j++) {
+                if (word[j]) {
+                    fun(i + j);
+                }
+            }
+        }
+        i += wordSize;
+    }
+}
+
 
 
 #endif //CHIMERIC_DYNAMIC_BITSET_H

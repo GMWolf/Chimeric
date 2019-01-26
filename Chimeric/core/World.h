@@ -10,20 +10,29 @@
 #include "util/dynamic_bitset.h"
 #include "EntityManager.h"
 #include "ComponentManager.h"
+#include "FamilySubscription.h"
 
 namespace chimeric {
+
+    using AspectStore = HashedArrayTree<dynamic_bitset>;
 
     class World {
         ResourceManager resources;
 
         std::unordered_map<std::type_index, size_t> componentIDs;
-
+        std::unordered_map<std::string, size_t> componentIdByName;
         std::vector<baseComponentManager*> componentManagers;
+        std::unordered_map<size_t, baseComponentManager*> componentManagersByID;
 
         size_t nextComponentID = 0;
 
+        std::vector<std::unique_ptr<FamilySubscription>> subscriptions;
+
+
     public:
         EntityManager entities;
+
+        World();
 
         void update();
 
@@ -37,6 +46,10 @@ namespace chimeric {
 
         template<class T>
         T& get();
+
+        baseComponentManager* getComponentManager(const char* name);
+
+        FamilySubscription& getSubscription(const Family& family);
 
         template<class T>
         const T& getConst();
@@ -53,7 +66,9 @@ namespace chimeric {
 
     template<class T>
     void World::registerComponent() {
-        componentIDs.insert({typeid(T), nextComponentID++});
+        size_t id = nextComponentID++;
+        componentIDs.insert({typeid(T), id});
+        componentIdByName.insert({Component<T>::name, id});
         resources.emplace<ComponentManager<T>>(*this);
         componentManagers.push_back(&resources.get<ComponentManager<T>>());
     }

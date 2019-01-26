@@ -12,10 +12,14 @@ namespace chimeric {
     class World;
     class Family;
     class FamilySubscription {
+        friend class World;
         const World& world;
         dynamic_bitset all;
         dynamic_bitset exlcude;
         dynamic_bitset one;
+
+        std::vector<size_t> entities;
+        dynamic_bitset dirtyEntities;
 
     public:
         FamilySubscription(const World& world, const Family& family);

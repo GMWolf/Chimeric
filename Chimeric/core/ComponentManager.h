@@ -9,24 +9,23 @@
 #include <utility>
 #include <typeindex>
 #include "util/flat_set.h"
-#include "Storage.h"
+#include "util/dynamic_bitset.h"
+#include "Component.h"
 
 namespace chimeric {
 
     class World;
     class baseComponentManager {
+        friend World;
     protected:
-
         explicit baseComponentManager(World& world, std::type_index c);
-        World& world;
-        flat_set<size_t> batchRemove;
-
+        dynamic_bitset batchAdd{};
+        dynamic_bitset batchRemove{};
         size_t bit;
 
-        void setBit(size_t e);
-        void resetBit(size_t e);
     public:
-        virtual void processBatchTasks() = 0;
+        void processBatchTasks(World& world);
+        virtual void processBatchRemove() = 0;
         void remove(size_t id);
     };
 
@@ -44,7 +43,7 @@ namespace chimeric {
         template<class... Args>
         T& emplace(size_t id, Args&&... args);
 
-        void processBatchTasks() override;
+        void processBatchRemove() override;
     };
 
     template<class T>
@@ -54,28 +53,27 @@ namespace chimeric {
 
     template<class T>
     bool ComponentManager<T>::has(size_t id) {
-        return store.has(id) && !batchRemove.contains(id);
+        return store.has(id) && !batchRemove.test(id);
     }
 
     template<class T>
     template<class... Args>
     T &ComponentManager<T>::emplace(size_t id, Args&&... args) {
-        auto p = batchRemove.find(id);
-        if (p != batchRemove.end()) {
-            batchRemove.erase(p);
+
+        if (batchRemove.test(id)) {
             store.erase(id);
+            batchRemove.reset(id);
         }
 
-        setBit(id);
+        batchAdd.set(id);
         return store.emplace(id, std::forward<Args>(args)...);
     }
 
     template<class T>
-    void ComponentManager<T>::processBatchTasks() {
-        for(auto e : batchRemove) {
+    void ComponentManager<T>::processBatchRemove() {
+        batchRemove.foreachset([this](size_t e){
             store.erase(e);
-        }
-        batchRemove.clear();
+        });
     }
 
     template<class T>
