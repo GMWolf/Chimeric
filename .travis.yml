@@ -1,7 +1,7 @@
 language: cpp
 script: 
  - cmake 
- - ./ChimericTest
+ - ./Test/ChimericTest
 compiler:
   - clang
   - gcc
