@@ -35,7 +35,7 @@ TEST_CASE("Family subscriptions") {
         auto& mapperB = world.get<ComponentManager<ComponentB>>();
         auto& mapperC = world.get<ComponentManager<ComponentC>>();
 
-        auto s = world.getSubscription(Family().all<ComponentA, ComponentB, ComponentC>()) ;
+        auto& s = world.getSubscription(Family().all<ComponentA, ComponentB, ComponentC>()) ;
 
         auto e = world.create();
 
@@ -63,7 +63,7 @@ TEST_CASE("Family subscriptions") {
         auto& mapperB = world.get<ComponentManager<ComponentB>>();
         auto& mapperC = world.get<ComponentManager<ComponentC>>();
 
-        auto s = world.getSubscription(Family().one<ComponentA, ComponentB, ComponentC>()) ;
+        auto& s = world.getSubscription(Family().one<ComponentA, ComponentB, ComponentC>()) ;
 
         auto e1 = world.create();
         auto e2 = world.create();
@@ -103,7 +103,7 @@ TEST_CASE("Family subscriptions") {
         auto& mapperB = world.get<ComponentManager<ComponentB>>();
         auto& mapperC = world.get<ComponentManager<ComponentC>>();
 
-        auto s = world.getSubscription(Family().all<ComponentA>().exclude<ComponentB, ComponentC>()) ;
+        auto& s = world.getSubscription(Family().all<ComponentA>().exclude<ComponentB, ComponentC>()) ;
 
         auto e1 = world.create();
         auto e2 = world.create();
@@ -133,20 +133,19 @@ TEST_CASE("Family subscriptions") {
         auto& mapperB = world.get<ComponentManager<ComponentB>>();
         auto& mapperC = world.get<ComponentManager<ComponentC>>();
 
-        auto s = world.getSubscription(Family().all<ComponentA, ComponentB>().exclude<ComponentC>());
+        auto& s = world.getSubscription(Family().all<ComponentA, ComponentB>().exclude<ComponentC>());
 
         auto e1 = world.create();
         auto e2 = world.create();
         auto e3 = world.create();
-
-        REQUIRE(!world.subscriptionsByBit.empty());
-        REQUIRE(world.subscriptionsByBit[0].count() == 1);
 
         REQUIRE(s.entities.empty());
 
         mapperA.emplace(e1);
         mapperB.emplace(e2);
         mapperC.emplace(e3);
+
+
         world.update();
         REQUIRE(s.entities.empty());
 
@@ -155,9 +154,11 @@ TEST_CASE("Family subscriptions") {
         mapperA.emplace(e3);
         mapperB.emplace(e3);
 
+
         world.update();
         REQUIRE(s.match(e1));
         REQUIRE(s.match(e2));
+
         REQUIRE(s.entities == std::vector{e1, e2});
 
         mapperA.remove(e1);
@@ -167,9 +168,41 @@ TEST_CASE("Family subscriptions") {
         world.update();
 
         REQUIRE(s.entities == std::vector{e3});
+    }
 
+    SECTION("Subscription entity destroy") {
+        World world;
+        world.registerComponent<ComponentA>();
+        world.registerComponent<ComponentB>();
+        world.registerComponent<ComponentC>();
 
+        auto& mapperA = world.get<ComponentManager<ComponentA>>();
+        auto& mapperB = world.get<ComponentManager<ComponentB>>();
+        auto& mapperC = world.get<ComponentManager<ComponentC>>();
 
+        auto& s = world.getSubscription(Family().all<ComponentA, ComponentB, ComponentC>());
+
+        std::vector es {
+                world.create(),
+                world.create(),
+                world.create()
+        };
+
+        for(auto e : es) {
+            mapperA.emplace(e);
+            mapperB.emplace(e);
+            mapperC.emplace(e);
+        }
+
+        world.update();
+
+        REQUIRE(s.entities == es);
+
+        for(auto e : es) {
+            world.destroy(e);
+            world.update();
+            REQUIRE(std::find(s.entities.begin(), s.entities.end(), e) == s.entities.end());
+        }
     }
 
 }

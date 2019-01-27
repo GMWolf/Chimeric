@@ -18,7 +18,6 @@ namespace chimeric {
     using AspectStore = HashedArrayTree<dynamic_bitset>;
 
     class World {
-    public:
         ResourceManager resources;
 
         std::unordered_map<std::type_index, size_t> componentIDs;
@@ -50,9 +49,14 @@ namespace chimeric {
         template<class T>
         T& get();
 
+        template<class T>
+        ComponentManager<T>& getComponentManager() {
+            ComponentManager<T>* cm = new ComponentManager<T>(*this);
+        }
+
         baseComponentManager* getComponentManager(const char* name);
 
-        const FamilySubscription& getSubscription(const Family& family);
+        FamilySubscription& getSubscription(const Family& family);
 
         template<class T>
         const T& getConst();
@@ -74,6 +78,7 @@ namespace chimeric {
         componentIdByName.insert({Component<T>::name, id});
         resources.emplace<ComponentManager<T>>(*this);
         componentManagers.push_back(&resources.get<ComponentManager<T>>());
+        componentManagersByID.insert({id, &resources.get<ComponentManager<T>>()});
     }
 
     template<class T>

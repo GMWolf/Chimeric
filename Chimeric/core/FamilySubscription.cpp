@@ -49,7 +49,7 @@ void chimeric::FamilySubscription::update() {
 
         //update vector
         entities.clear();
-        dirtyEntities.foreachset([&](auto e) {
+        entitiesActive.foreachset([&](auto e) {
             entities.push_back(e);
         });
 

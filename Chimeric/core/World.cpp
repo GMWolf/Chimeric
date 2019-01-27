@@ -21,13 +21,14 @@ void chimeric::World::update() {
 
     dynamic_bitset dirty;
 
-    for(auto& cm : componentManagers) {
+    for(auto cm : componentManagers) {
         //subscriptions dirty bits
         if (subscriptionsByBit.size() > cm->bit) {
             if (cm->batchAdd.any() || cm->batchRemove.any()) {
-                dirty = cm->batchAdd & cm->batchRemove;
+                dirty = cm->batchAdd;
+                dirty |= cm->batchRemove;
                 for (auto sub : subscriptionsByBit[cm->bit]) {
-                    sub->dirtyEntities &= dirty;
+                    sub->dirtyEntities |= dirty;
                 }
             }
         }
@@ -37,7 +38,7 @@ void chimeric::World::update() {
 
     //update subscriptions
     for(auto& s : subscriptions) {
-        s->update();
+       s->update();
     }
 
     entities.update();
@@ -56,11 +57,13 @@ chimeric::baseComponentManager *chimeric::World::getComponentManager(const char 
     return componentManagersByID[id];
 }
 
-const chimeric::FamilySubscription &chimeric::World::getSubscription(const chimeric::Family &family) {
+chimeric::FamilySubscription& chimeric::World::getSubscription(const chimeric::Family &family) {
 
     auto s = std::make_unique<FamilySubscription>(*this, family);
 
-    dynamic_bitset allbits = s->all & s->exlcude & s->one;
+    dynamic_bitset allbits = s->all;
+    allbits |= s->exlcude;
+    allbits |= s->one;
 
     allbits.foreachset([&](auto e) {
         if (subscriptionsByBit.size() <= e) {

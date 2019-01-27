@@ -23,14 +23,13 @@ namespace chimeric {
 
 
         dynamic_bitset entitiesActive;
-
-
         dynamic_bitset dirtyEntities;
 
     public:
         std::vector<size_t> entities;
 
         FamilySubscription(const World& world, const Family& family);
+        FamilySubscription(const FamilySubscription&) = delete;
 
         iterator begin() const;
         iterator end() const;

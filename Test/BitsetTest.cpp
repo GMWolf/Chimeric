@@ -172,4 +172,17 @@ TEST_CASE("Dynamic bitset") {
         REQUIRE(a == b);
     }
 
+    SECTION("foreachset", "[BS]") {
+        std::vector<size_t> vec {4,5,7,8,14,67,96,145,258};
+        bitset bs;
+        for(size_t i : vec) {
+            bs[i] = true;
+        }
+
+        int i = 0;
+        bs.foreachset([&](auto e) {
+           REQUIRE(e == vec[i++]);
+        });
+    }
+
 }
