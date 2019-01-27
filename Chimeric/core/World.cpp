@@ -19,10 +19,14 @@ void chimeric::World::destroy(size_t id) {
 
 void chimeric::World::update() {
 
-    dynamic_bitset dirty;
+    //update all systems
+    for(auto& s : systems) {
+        s->update();
+    }
 
+    //subscriptions dirty bits
+    dynamic_bitset dirty;
     for(auto cm : componentManagers) {
-        //subscriptions dirty bits
         if (subscriptionsByBit.size() > cm->bit) {
             if (cm->batchAdd.any() || cm->batchRemove.any()) {
                 dirty = cm->batchAdd;
@@ -75,4 +79,3 @@ chimeric::FamilySubscription& chimeric::World::getSubscription(const chimeric::F
     subscriptions.push_back(std::move(s));
     return *subscriptions.back();
 }
-

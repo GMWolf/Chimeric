@@ -12,6 +12,7 @@
 #include "EntityManager.h"
 #include "ComponentManager.h"
 #include "FamilySubscription.h"
+#include "System.h"
 
 namespace chimeric {
 
@@ -30,6 +31,8 @@ namespace chimeric {
         //Subscription stuff
         std::vector<std::unique_ptr<FamilySubscription>> subscriptions;
         std::vector<flat_set<FamilySubscription*>> subscriptionsByBit;
+
+        std::vector<System*> systems;
 
     public:
         EntityManager entities;
@@ -57,6 +60,9 @@ namespace chimeric {
         baseComponentManager* getComponentManager(const char* name);
 
         FamilySubscription& getSubscription(const Family& family);
+
+        template<class T, class... Args >
+        void addSystem(Args&&... args);
 
         template<class T>
         const T& getConst();
@@ -90,6 +96,15 @@ namespace chimeric {
     const T &World::getConst() {
         return resources.getConst<T>();
     }
+
+
+    template<class T, class... Args>
+    void chimeric::World::addSystem(Args &&... args) {
+        resources.emplace<T>(*this, std::forward<Args>(args)...);
+        systems.push_back(&resources.get<T>());
+    }
+
+
 
 }
 
