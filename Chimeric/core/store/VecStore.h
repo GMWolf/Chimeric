@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <utility>
+#include <memory>
 
 namespace chimeric {
 
