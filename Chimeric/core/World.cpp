@@ -65,9 +65,9 @@ chimeric::FamilySubscription& chimeric::World::getSubscription(const chimeric::F
 
     auto s = std::make_unique<FamilySubscription>(*this, family);
 
-    dynamic_bitset allbits = s->all;
-    allbits |= s->exlcude;
-    allbits |= s->one;
+    dynamic_bitset allbits = s->bitsets.all;
+    allbits |= s->bitsets.exlcude;
+    allbits |= s->bitsets.one;
 
     allbits.foreachset([&](auto e) {
         if (subscriptionsByBit.size() <= e) {

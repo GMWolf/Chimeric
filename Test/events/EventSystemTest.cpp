@@ -18,6 +18,14 @@ struct TestEvent{
     int a; int b;
 };
 
+struct A {
+    int a;
+};
+
+struct B {
+    int b;
+};
+
 TEST_CASE("Event System") {
 
 
@@ -54,5 +62,52 @@ TEST_CASE("Event System") {
         eq.pop();
 
         REQUIRE(eq.empty());
+    }
+
+
+    SECTION("Entity Events", "[EV]"){
+
+
+        World world;
+        world.addSystem<EventSystem>();
+
+        auto& es = world.get<EventSystem>();
+
+        world.registerComponent<A>();
+        world.registerComponent<B>();
+
+        ComponentManager<A>& cma = world.get<ComponentManager<A>>();
+        ComponentManager<B>& cmb = world.get<ComponentManager<B>>();
+
+        EventQueue<TestEvent> eq1;
+        EventQueue<TestEvent> eq2;
+
+        es.registerQueue(eq1, Family().all<A>());
+        es.registerQueue(eq2, Family().all<A, B>());
+
+        auto e1 = world.create();
+        auto e2 = world.create();
+
+        cma.emplace(e1, A{1});
+
+        cma.emplace(e2, A{2});
+        cmb.emplace(e2, B{2});
+
+        world.update();
+
+        es.dispatch(TestEvent{1,1}, e1);
+        es.dispatch(TestEvent{2,2}, e2);
+
+        REQUIRE(!eq1.empty());
+        REQUIRE(eq1.front().a == 1);
+        eq1.pop();
+        REQUIRE(eq1.front().a == 2);
+        eq1.pop();
+        REQUIRE(eq1.empty());
+
+        REQUIRE(eq2.front().a == 2);
+        eq2.pop();
+        REQUIRE(eq2.empty());
+
     }
 }

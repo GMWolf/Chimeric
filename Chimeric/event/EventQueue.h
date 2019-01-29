@@ -41,9 +41,8 @@ namespace chimeric {
             return deq.empty();
         }
 
-
-
     };
+
 
 }
 

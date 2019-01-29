@@ -6,12 +6,12 @@
 #define CHIMERIC_ASPECT_H
 
 #include "util/flat_set.h"
-#include "World.h"
+#include <typeindex>
 
 namespace chimeric {
 
     class Family {
-        friend class FamilySubscription;
+        friend class FamilyBitsets;
         flat_set<std::type_index> all_set;
         flat_set<std::type_index> one_set;
         flat_set<std::type_index> exclude_set;

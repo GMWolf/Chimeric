@@ -6,6 +6,7 @@
 #define CHIMERIC_FAMILYSUBSCRIPTION_H
 
 #include "util/dynamic_bitset.h"
+#include "FamilyBitsets.h"
 
 namespace chimeric {
 
@@ -17,10 +18,8 @@ namespace chimeric {
         using iterator = std::vector<size_t>::const_iterator;
 
         const World& world;
-        dynamic_bitset all;
-        dynamic_bitset exlcude;
-        dynamic_bitset one;
 
+        FamilyBitsets bitsets;
 
         dynamic_bitset entitiesActive;
         dynamic_bitset dirtyEntities;
