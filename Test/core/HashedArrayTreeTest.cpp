@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "core/store/HashedArrayTree.h"
 #include "common.h"
 

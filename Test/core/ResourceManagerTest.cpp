@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "core/ResourceManager.h"
 #include "common.h"
 

@@ -2,7 +2,7 @@
 // Created by felix on 19/12/2018.
 //
 #include <cstring>
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "core/Component.h"
 
 using namespace chimeric;

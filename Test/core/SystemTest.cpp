@@ -3,7 +3,7 @@
 //
 
 
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "common.h"
 #include "core/World.h"
 #include "core/System.h"

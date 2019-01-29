@@ -2,7 +2,7 @@
 // Created by felix on 19/12/2018.
 //
 
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "core/util/dynamic_bitset.h"
 #include "common.h"
 

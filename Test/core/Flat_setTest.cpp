@@ -2,7 +2,7 @@
 // Created by felix on 21/12/2018.
 //
 
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "core/util/flat_set.h"
 #include "common.h"
 

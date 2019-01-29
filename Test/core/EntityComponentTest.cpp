@@ -2,7 +2,7 @@
 // Created by felix on 21/12/2018.
 //
 
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "common.h"
 #include "core/World.h"
 

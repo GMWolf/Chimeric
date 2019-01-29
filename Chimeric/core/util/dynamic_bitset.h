@@ -66,6 +66,8 @@ namespace chimeric {
 
         template<class L>
         void foreachset(L fun);
+        template<class L>
+        void foreachunset(L fun);
 
         friend std::ostream &operator<<(std::ostream &os, const dynamic_bitset &bitset);
     };
@@ -80,6 +82,21 @@ void chimeric::dynamic_bitset::foreachset(L fun) {
         if (word.any()) {
             for(size_t j = 0; j < wordSize; j++) {
                 if (word[j]) {
+                    fun(i + j);
+                }
+            }
+        }
+        i += wordSize;
+    }
+}
+
+template<class L>
+void chimeric::dynamic_bitset::foreachunset(L fun) {
+    size_t i = 0;
+    for(auto& word : words) {
+        if (!word.all()) {
+            for(size_t j = 0; j < wordSize; j++) {
+                if (!word[j]) {
                     fun(i + j);
                 }
             }
