@@ -2,6 +2,7 @@
 // Created by felix on 18/12/2018.
 //
 
+#include <chrono>
 #include "World.h"
 #include "ComponentManager.h"
 
@@ -20,8 +21,13 @@ void chimeric::World::destroy(size_t id) {
 void chimeric::World::update() {
 
     //update all systems
-    for(auto& s : systems) {
-        s->update();
+    auto start = std::chrono::high_resolution_clock::now();
+    for(size_t i = 0; i < systems.size(); i++) {
+        systems[i]->update();
+        //get system time
+        const auto end = std::chrono::high_resolution_clock::now();
+        systemTime[i] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        start = end;
     }
 
     //subscriptions dirty bits
@@ -46,6 +52,9 @@ void chimeric::World::update() {
     }
 
     entities.update();
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    ECStime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
 
 size_t chimeric::World::getComponentID(std::type_index c) const{
@@ -78,4 +87,16 @@ chimeric::FamilySubscription& chimeric::World::getSubscription(const chimeric::F
 
     subscriptions.push_back(std::move(s));
     return *subscriptions.back();
+}
+
+size_t chimeric::World::systemCount() {
+    return systems.size();
+}
+
+float chimeric::World::getSystemTime(size_t i) {
+    return systemTime[i];
+}
+
+float chimeric::World::getECStime() {
+    return ECStime;
 }

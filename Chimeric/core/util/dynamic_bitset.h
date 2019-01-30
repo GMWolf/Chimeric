@@ -8,6 +8,7 @@
 #include <vector>
 #include <bitset>
 #include <ostream>
+#include <string>
 
 namespace chimeric {
 

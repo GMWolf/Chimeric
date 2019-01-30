@@ -34,6 +34,8 @@ namespace chimeric {
 
         std::vector<System*> systems;
 
+        std::vector<float> systemTime;
+        float ECStime = 0;
     public:
         EntityManager entities;
 
@@ -69,6 +71,12 @@ namespace chimeric {
 
         size_t create();
         void destroy(size_t id);
+
+        size_t systemCount();
+
+        float getSystemTime(size_t i);
+
+        float getECStime();
     };
 
 
@@ -102,6 +110,7 @@ namespace chimeric {
     void chimeric::World::addSystem(Args &&... args) {
         resources.emplace<T>(*this, std::forward<Args>(args)...);
         systems.push_back(&resources.get<T>());
+        systemTime.push_back(0);
     }
 
 

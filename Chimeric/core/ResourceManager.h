@@ -23,7 +23,6 @@ namespace chimeric {
             }
 
             void *p;
-
             void (*destroy)(void *);
         };
 

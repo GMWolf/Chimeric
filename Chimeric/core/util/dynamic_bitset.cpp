@@ -3,6 +3,9 @@
 //
 
 #include "dynamic_bitset.h"
+#include <utility>
+#include <string>
+#include <algorithm>
 
 chimeric::dynamic_bitset::dynamic_bitset(chimeric::dynamic_bitset &&o) noexcept : words(std::move(o.words))  {
 }

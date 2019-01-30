@@ -3,6 +3,7 @@
 //
 
 
+#include <debug/PerformanceLogSystem.h>
 #include "../catch.hpp"
 #include "common.h"
 #include "core/World.h"
@@ -30,6 +31,7 @@ public:
     FamilySubscription& entities;
     ComponentManager<Velocity>& velocities;
     ComponentManager<Position>& positions;
+
 
     explicit velSystem(World &world) :
         System(world),
@@ -83,6 +85,7 @@ TEST_CASE("Full") {
 
         world.addSystem<accSystem>();
         world.addSystem<velSystem>();
+        world.addSystem<PerformanceLogSystem>();
 
         ComponentManager<Position>& posMapper = world.get<ComponentManager<Position>>();
         ComponentManager<Velocity>& velMapper = world.get<ComponentManager<Velocity>>();
